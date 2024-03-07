@@ -1,0 +1,17 @@
+{
+	"name": "CuratedStoreData",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LenskartSqlServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "prep",
+			"table": "StoreDetails"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

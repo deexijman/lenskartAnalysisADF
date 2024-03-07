@@ -1,0 +1,94 @@
+{
+	"name": "bestProductInEachMonthEveryYear",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "productWithTransaction",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "MonthlyBrandsSalesReport",
+						"type": "DatasetReference"
+					},
+					"name": "SalesReportOfEachBrandInAMonth"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "sort1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as string,",
+				"          product_id as string,",
+				"          quantity as integer,",
+				"          transaction_date as date,",
+				"          transaction_id as string,",
+				"          id as string,",
+				"          model_name as string,",
+				"          Product_Name as string,",
+				"          brand_name as string,",
+				"          {Market Price} as double,",
+				"          {Lenskart Price} as double,",
+				"          purchaseCount as integer,",
+				"          size as string,",
+				"          color as string,",
+				"          width as string,",
+				"          totalNoOfRatings as integer,",
+				"          avgRating as double,",
+				"          qty as integer,",
+				"          classification as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"derivedColumn1 aggregate(groupBy(Year,",
+				"          Month,",
+				"          brand_name),",
+				"     Poducts_Sold = count(product_id)) ~> aggregate1",
+				"source1 derive(Year = year(transaction_date),",
+				"          Month = month(transaction_date)) ~> derivedColumn1",
+				"aggregate1 select(mapColumn(",
+				"          Year,",
+				"          Month,",
+				"          brand_name,",
+				"          Poducts_Sold",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sort(asc(brand_name, true),",
+				"     asc(Year, true),",
+				"     asc(Month, true)) ~> sort1",
+				"sort1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> SalesReportOfEachBrandInAMonth"
+			]
+		}
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"name": "PrepContactLensColor",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LenskartSqlServer",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Contact Lens SQL Sink Datasets"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "prep",
+			"table": "ContactLensColor"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

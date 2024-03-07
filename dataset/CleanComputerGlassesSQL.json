@@ -1,0 +1,80 @@
+{
+	"name": "CleanComputerGlassesSQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LenskartSqlServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "model_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Product_Name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "brand_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Market Price",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Lenskart Price",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "purchaseCount",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "size",
+				"type": "nvarchar"
+			},
+			{
+				"name": "color",
+				"type": "nvarchar"
+			},
+			{
+				"name": "width",
+				"type": "nvarchar"
+			},
+			{
+				"name": "totalNoOfRatings",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "avgRating",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "qty",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "classification",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "prep",
+			"table": "ComputerGlasses"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

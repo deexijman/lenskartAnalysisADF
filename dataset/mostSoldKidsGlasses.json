@@ -1,0 +1,17 @@
+{
+	"name": "mostSoldKidsGlasses",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LenskartSqlServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "curated",
+			"table": "mostSoldKidsGlasses"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

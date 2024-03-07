@@ -1,0 +1,81 @@
+{
+	"name": "Sunglasses_Analysis_Rating",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "prepSunGlasses",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "sunglassesRatingAnalysis",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "sort1"
+				},
+				{
+					"name": "rank1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as string,",
+				"          model_name as string,",
+				"          brand_name as string,",
+				"          image_url as string,",
+				"          market_price as double,",
+				"          lenscart_price as double,",
+				"          purchaseCount as integer,",
+				"          size as string,",
+				"          color as string,",
+				"          width as string,",
+				"          totalNoOfRatings as integer,",
+				"          avgRating as double,",
+				"          quantity as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 sort(desc(avgRating, true),",
+				"     desc(totalNoOfRatings, true)) ~> sort1",
+				"sort1 rank(desc(avgRating, true),",
+				"     output(Rank as long)) ~> rank1",
+				"rank1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id,",
+				"          model_name,",
+				"          brand_name,",
+				"          lenscart_price,",
+				"          size,",
+				"          color,",
+				"          width,",
+				"          totalNoOfRatings,",
+				"          avgRating,",
+				"          Rank",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

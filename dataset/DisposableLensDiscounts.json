@@ -1,0 +1,17 @@
+{
+	"name": "DisposableLensDiscounts",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LenskartSqlServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "curated",
+			"table": "disposableDiscounts"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

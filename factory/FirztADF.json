@@ -1,0 +1,9 @@
+{
+	"name": "FirztADF",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "83df8344-1a77-450c-bd9f-4360432fb496",
+		"tenantId": "2800c0a0-70e9-49be-8733-faeaa6aced99"
+	}
+}

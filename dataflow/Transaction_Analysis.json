@@ -1,0 +1,75 @@
+{
+	"name": "Transaction_Analysis",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Transactions_With_ProductsDetails",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Total_transaction_analysis",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as string,",
+				"          product_id as string,",
+				"          quantity as integer,",
+				"          transaction_date as date,",
+				"          transaction_id as string,",
+				"          id as string,",
+				"          model_name as string,",
+				"          Product_Name as string,",
+				"          brand_name as string,",
+				"          {Market Price} as double,",
+				"          {Lenskart Price} as double,",
+				"          purchaseCount as integer,",
+				"          size as string,",
+				"          color as string,",
+				"          width as string,",
+				"          totalNoOfRatings as integer,",
+				"          avgRating as double,",
+				"          qty as integer,",
+				"          classification as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"derivedColumn1 aggregate(groupBy(classification),",
+				"     Total_Quantity = sum(quantity),",
+				"          Total_Revenue = sum(total_cost)) ~> aggregate1",
+				"source1 derive(total_cost = quantity*{Lenskart Price}) ~> derivedColumn1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

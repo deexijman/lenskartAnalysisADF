@@ -1,0 +1,74 @@
+{
+	"name": "Cleaning_Customers_Data",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "RawCustomer",
+						"type": "DatasetReference"
+					},
+					"name": "GetCustomerBlob",
+					"description": "Get Source from customer blob excel"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "PrepCustomerData",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerCleanSQLData",
+					"description": "Cleansed Customer SQL Data"
+				}
+			],
+			"transformations": [
+				{
+					"name": "RemoveNullRows",
+					"description": "Remove Null Rows Customers Based On Emails"
+				},
+				{
+					"name": "CastingTheDatatypes",
+					"description": "Cast columns to different types in Customer Table"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as string,",
+				"          first_name as string,",
+				"          last_name as string,",
+				"          email as string,",
+				"          phone_number as string,",
+				"          address as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> GetCustomerBlob",
+				"GetCustomerBlob filter(isNull(email) == false()) ~> RemoveNullRows",
+				"RemoveNullRows cast(output(",
+				"          phone_number as string",
+				"     ),",
+				"     errors: true) ~> CastingTheDatatypes",
+				"CastingTheDatatypes sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          customer_id as string,",
+				"          first_name as string,",
+				"          last_name as string,",
+				"          email as string,",
+				"          phone_number as string,",
+				"          address as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> CustomerCleanSQLData"
+			]
+		}
+	}
+}

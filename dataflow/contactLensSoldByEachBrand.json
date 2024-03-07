@@ -1,0 +1,127 @@
+{
+	"name": "contactLensSoldByEachBrand",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "PrepContactLensPower",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "PrepTransactionData",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "lensSoldByEachCompany",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "sort1"
+				},
+				{
+					"name": "select4"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as string,",
+				"          model_name as string,",
+				"          brand_name as string,",
+				"          POWER as string,",
+				"          image_url as string,",
+				"          market_price as double,",
+				"          lenscart_price as double,",
+				"          purchaseCount as integer,",
+				"          size as boolean,",
+				"          color as string,",
+				"          width as string,",
+				"          totalNoOfRatings as integer,",
+				"          avgRating as double,",
+				"          quantity as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source(output(",
+				"          customer_id as string,",
+				"          product_id as string,",
+				"          quantity as integer,",
+				"          transaction_date as date,",
+				"          transaction_id as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source2",
+				"select2, select3 join(id == product_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"source1 select(mapColumn(",
+				"          id,",
+				"          model_name,",
+				"          brand_name,",
+				"          POWER",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"source2 select(mapColumn(",
+				"          customer_id,",
+				"          product_id,",
+				"          transaction_id",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"join1 aggregate(groupBy(brand_name,",
+				"          POWER),",
+				"     Quantity_Sold = count(POWER)) ~> aggregate1",
+				"aggregate1 sort(asc(brand_name, true)) ~> sort1",
+				"sort1 select(mapColumn(",
+				"          brand_name,",
+				"          Lens_Shape = POWER,",
+				"          Quantity_Sold",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select4",
+				"select4 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

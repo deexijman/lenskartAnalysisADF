@@ -1,0 +1,106 @@
+{
+	"name": "preferred_brand_kids_glasses",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "kidsAzureSQL",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "PrepTransactionData",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "preferredBrandKidsGlasses",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "window1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "join1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as string,",
+				"          model_name as string,",
+				"          Product_Name as string,",
+				"          brand_name as string,",
+				"          {Market Price} as double,",
+				"          {Lenskart Price} as double,",
+				"          purchaseCount as integer,",
+				"          size as string,",
+				"          color as string,",
+				"          width as string,",
+				"          totalNoOfRatings as integer,",
+				"          avgRating as double,",
+				"          qty as integer,",
+				"          classification as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source(output(",
+				"          customer_id as string,",
+				"          product_id as string,",
+				"          quantity as integer,",
+				"          transaction_date as date,",
+				"          transaction_id as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source2",
+				"join1 aggregate(groupBy(size,",
+				"          brand_name),",
+				"     brand_count = count(brand_name)) ~> aggregate1",
+				"aggregate1 window(over(size),",
+				"     desc(brand_count, true),",
+				"     rank = rowNumber()) ~> window1",
+				"window1 filter(rank==1) ~> filter1",
+				"source1, source2 join(id == product_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          size,",
+				"          brand_name",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

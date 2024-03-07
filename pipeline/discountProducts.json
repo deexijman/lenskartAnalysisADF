@@ -1,0 +1,37 @@
+{
+	"name": "discountProducts",
+	"properties": {
+		"activities": [
+			{
+				"name": "DiscountFind",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DiscountDataflowLensDisp",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Contact Lens Curated"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-03-06T10:45:13Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,17 @@
+{
+	"name": "lensSoldByEachCompany",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LenskartSqlServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "curated",
+			"table": "lensSoldByEachCompany"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

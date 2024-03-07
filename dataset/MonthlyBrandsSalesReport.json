@@ -1,0 +1,17 @@
+{
+	"name": "MonthlyBrandsSalesReport",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LenskartSqlServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "curated",
+			"table": "MonthlyBrandsSalesReport"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

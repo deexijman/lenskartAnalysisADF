@@ -1,0 +1,17 @@
+{
+	"name": "Total_transaction_analysis",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LenskartSqlServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "curated",
+			"table": "Total_Transaction_Analysis"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

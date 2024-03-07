@@ -1,0 +1,17 @@
+{
+	"name": "PrepTotalData",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LenskartSqlServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "prep",
+			"table": "TotalData"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

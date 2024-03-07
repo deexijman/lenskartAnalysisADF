@@ -1,0 +1,24 @@
+{
+	"name": "kidsEyeGlassesCSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "lenskartBlob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "kids_glasses.csv",
+				"container": "firztcontainer"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

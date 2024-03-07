@@ -1,0 +1,89 @@
+{
+	"name": "Cleaning_SunGlasses",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "sunGlassesCSV",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "prepSunGlasses",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "cast1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as integer,",
+				"          model_name as string,",
+				"          brand_name as string,",
+				"          image_url as string,",
+				"          market_price as short,",
+				"          lenscart_price as short,",
+				"          purchaseCount as integer,",
+				"          size as string,",
+				"          color as string,",
+				"          width as string,",
+				"          totalNoOfRatings as short,",
+				"          avgRating as double,",
+				"          quantity as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 cast(output(",
+				"          id as string,",
+				"          market_price as double,",
+				"          lenscart_price as double,",
+				"          totalNoOfRatings as integer,",
+				"          quantity as integer",
+				"     ),",
+				"     errors: true) ~> cast1",
+				"cast1 derive(width = iif(isNull(width), 'NA', width),",
+				"          color = iif(isNull(color), 'NA', color)) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id as string,",
+				"          model_name as string,",
+				"          brand_name as string,",
+				"          image_url as string,",
+				"          market_price as double,",
+				"          lenscart_price as double,",
+				"          purchaseCount as integer,",
+				"          size as string,",
+				"          color as string,",
+				"          width as string,",
+				"          totalNoOfRatings as integer,",
+				"          avgRating as double,",
+				"          quantity as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

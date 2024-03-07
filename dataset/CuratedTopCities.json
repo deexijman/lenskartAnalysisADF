@@ -1,0 +1,17 @@
+{
+	"name": "CuratedTopCities",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LenskartSqlServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "curated",
+			"table": "TopCitites"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,84 @@
+{
+	"name": "DiscountDataflowLensDisp",
+	"properties": {
+		"folder": {
+			"name": "Contact Lens Dataflow"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ContactLensDisposabilityPrep",
+						"type": "DatasetReference"
+					},
+					"name": "disposableDataset"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DisposableLensDiscounts",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedDiscountColumn"
+				},
+				{
+					"name": "sortByDiscount"
+				},
+				{
+					"name": "DiscountReqColumns"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as string,",
+				"          model_name as string,",
+				"          brand_name as string,",
+				"          DISPOSABILITY as string,",
+				"          image_url as string,",
+				"          market_price as double,",
+				"          lenscart_price as double,",
+				"          purchaseCount as integer,",
+				"          color as string,",
+				"          width as string,",
+				"          totalNoOfRatings as integer,",
+				"          avgRating as double,",
+				"          quantity as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> disposableDataset",
+				"disposableDataset derive(DiscountPercentage = round(((market_price-lenscart_price)/market_price)*100 , 2)) ~> derivedDiscountColumn",
+				"derivedDiscountColumn sort(desc(DiscountPercentage, true)) ~> sortByDiscount",
+				"sortByDiscount select(mapColumn(",
+				"          id,",
+				"          model_name,",
+				"          brand_name,",
+				"          DISPOSABILITY,",
+				"          color,",
+				"          avgRating,",
+				"          DiscountPercentage",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> DiscountReqColumns",
+				"DiscountReqColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

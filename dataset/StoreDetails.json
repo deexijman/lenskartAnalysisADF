@@ -1,0 +1,22 @@
+{
+	"name": "StoreDetails",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "lenskartBlob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "store_details.xlsx",
+				"container": "firztcontainer"
+			},
+			"sheetIndex": 0,
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

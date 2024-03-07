@@ -1,0 +1,83 @@
+{
+	"name": "Clean_Total_Data",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "TotalCSV",
+						"type": "DatasetReference"
+					},
+					"name": "LoadTotalCSV"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "PrepTotalData",
+						"type": "DatasetReference"
+					},
+					"name": "TotSQLEyeGlass"
+				}
+			],
+			"transformations": [
+				{
+					"name": "removeIdNull"
+				},
+				{
+					"name": "updateNulls"
+				},
+				{
+					"name": "updateCast"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as integer,",
+				"          model_name as string,",
+				"          Product_Name as string,",
+				"          brand_name as string,",
+				"          {Market Price} as short,",
+				"          {Lenskart Price} as short,",
+				"          purchaseCount as integer,",
+				"          size as string,",
+				"          color as string,",
+				"          width as string,",
+				"          totalNoOfRatings as short,",
+				"          avgRating as double,",
+				"          qty as integer,",
+				"          classification as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> LoadTotalCSV",
+				"LoadTotalCSV filter(not(isNull(id))) ~> removeIdNull",
+				"updateCast derive(Product_Name = iif(isNull(Product_Name),'NA', Product_Name),",
+				"          size = iif(isNull(size),'NA', size),",
+				"          width = iif(isNull(width),'NA', width),",
+				"          color = iif(isNull(color),'NA', color),",
+				"          totalNoOfRatings = iif(isNull(totalNoOfRatings), 0, totalNoOfRatings),",
+				"          avgRating = iif(isNull(avgRating), toDouble(0), avgRating),",
+				"          qty = iif(isNull(qty), 0, qty)) ~> updateNulls",
+				"removeIdNull cast(output(",
+				"          id as string,",
+				"          {Market Price} as double,",
+				"          {Lenskart Price} as double,",
+				"          totalNoOfRatings as integer",
+				"     ),",
+				"     errors: true) ~> updateCast",
+				"updateNulls sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> TotSQLEyeGlass"
+			]
+		}
+	}
+}

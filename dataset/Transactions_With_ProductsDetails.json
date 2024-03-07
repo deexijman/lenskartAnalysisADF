@@ -1,0 +1,17 @@
+{
+	"name": "Transactions_With_ProductsDetails",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LenskartSqlServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "staging",
+			"table": "Transactions_With_ProductDetails"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

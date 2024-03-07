@@ -1,0 +1,17 @@
+{
+	"name": "preferredBrandKidsGlasses",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LenskartSqlServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "curated",
+			"table": "kidsGlassesPrefereedBrandBySize"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

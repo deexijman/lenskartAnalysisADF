@@ -1,0 +1,70 @@
+{
+	"name": "top_cities_shops",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CuratedStoreData",
+						"type": "DatasetReference"
+					},
+					"name": "shop",
+					"description": "get shop data"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CuratedTopCities",
+						"type": "DatasetReference"
+					},
+					"name": "CuratedTopCities"
+				}
+			],
+			"transformations": [
+				{
+					"name": "groupByState"
+				},
+				{
+					"name": "rank1"
+				},
+				{
+					"name": "topTenCitites"
+				},
+				{
+					"name": "sort1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          city_name as string,",
+				"          address as string,",
+				"          store_state as string,",
+				"          number as string,",
+				"          timings as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> shop",
+				"shop aggregate(groupBy(store_state),",
+				"     shops_in_state = count(city_name)) ~> groupByState",
+				"groupByState rank(desc(shops_in_state, true),",
+				"     output(rank as long)) ~> rank1",
+				"rank1 filter(rank<=10) ~> topTenCitites",
+				"topTenCitites sort(asc(rank, true)) ~> sort1",
+				"sort1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> CuratedTopCities"
+			]
+		}
+	}
+}

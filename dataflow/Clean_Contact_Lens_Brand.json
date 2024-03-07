@@ -1,0 +1,98 @@
+{
+	"name": "Clean_Contact_Lens_Brand",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ContactLensDisposable",
+						"type": "DatasetReference"
+					},
+					"name": "contactLensBrandDisposability",
+					"description": "contact Lens Disposability Blob "
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "PrepContactLensDisposability",
+						"type": "DatasetReference"
+					},
+					"name": "PrepContactLensBrandSQL",
+					"description": "Add sink dataset"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Typecasting"
+				},
+				{
+					"name": "replacingNull"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as integer,",
+				"          model_name as string,",
+				"          brand_name as string,",
+				"          DISPOSABILITY as string,",
+				"          image_url as string,",
+				"          market_price as short,",
+				"          lenscart_price as short,",
+				"          purchaseCount as integer,",
+				"          size as boolean,",
+				"          color as string,",
+				"          width as string,",
+				"          totalNoOfRatings as short,",
+				"          avgRating as double,",
+				"          quantity as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> contactLensBrandDisposability",
+				"contactLensBrandDisposability cast(output(",
+				"          id as string,",
+				"          model_name as string,",
+				"          market_price as double,",
+				"          lenscart_price as double,",
+				"          totalNoOfRatings as integer",
+				"     ),",
+				"     errors: true) ~> Typecasting",
+				"Typecasting derive(size = iif(isNull(size),false(),size),",
+				"          color = iif(isNull(color), 'NA', color),",
+				"          width = iif(isNull(width),'NA',width)) ~> replacingNull",
+				"replacingNull select(mapColumn(",
+				"          id,",
+				"          model_name,",
+				"          brand_name,",
+				"          DISPOSABILITY,",
+				"          image_url,",
+				"          market_price,",
+				"          lenscart_price,",
+				"          purchaseCount,",
+				"          color,",
+				"          width,",
+				"          totalNoOfRatings,",
+				"          avgRating,",
+				"          quantity",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> PrepContactLensBrandSQL"
+			]
+		}
+	}
+}

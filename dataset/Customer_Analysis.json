@@ -1,0 +1,17 @@
+{
+	"name": "Customer_Analysis",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LenskartSqlServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "curated",
+			"table": "Customer_Analysis"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

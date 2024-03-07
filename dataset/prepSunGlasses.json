@@ -1,0 +1,76 @@
+{
+	"name": "prepSunGlasses",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LenskartSqlServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "model_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "brand_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "image_url",
+				"type": "nvarchar"
+			},
+			{
+				"name": "market_price",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "lenscart_price",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "purchaseCount",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "size",
+				"type": "nvarchar"
+			},
+			{
+				"name": "color",
+				"type": "nvarchar"
+			},
+			{
+				"name": "width",
+				"type": "nvarchar"
+			},
+			{
+				"name": "totalNoOfRatings",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "avgRating",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "quantity",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "prep",
+			"table": "SunGlasses"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

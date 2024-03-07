@@ -1,0 +1,66 @@
+{
+	"name": "Cleaning_Transactions_Data",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "transactions",
+						"type": "DatasetReference"
+					},
+					"name": "GetTransactionData",
+					"description": "Get Transaction Data From Blob"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "PrepTransactionData",
+						"type": "DatasetReference"
+					},
+					"name": "TransactionCleanSQLData",
+					"description": "Transaction Clean SQL Data Sink "
+				}
+			],
+			"transformations": [
+				{
+					"name": "RemovingNull",
+					"description": "RemovingNull Rows"
+				},
+				{
+					"name": "CastingColTypes",
+					"description": "Cast columns to distinct data types"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as string,",
+				"          product_id as string,",
+				"          quantity as string,",
+				"          transaction_date as string,",
+				"          transaction_id as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> GetTransactionData",
+				"GetTransactionData filter(isNull(transaction_id) == false()) ~> RemovingNull",
+				"RemovingNull cast(output(",
+				"          quantity as integer,",
+				"          transaction_date as date",
+				"     ),",
+				"     errors: true) ~> CastingColTypes",
+				"CastingColTypes sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> TransactionCleanSQLData"
+			]
+		}
+	}
+}
